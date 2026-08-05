@@ -1,62 +1,48 @@
-// Troca de Abas
-function switchTab(tabId) {
-  document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+// Configuração da cena, câmera e renderizador Three.js
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('space-canvas') });
 
-  document.getElementById(tabId).classList.add('active');
-  event.target.classList.add('active');
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
 
-  if (tabId === 'system' && !window.threeInitialized) {
-    init3DScene();
-    window.threeInitialized = true;
-  }
+// Adicionando um Planeta 3D no centro
+const geometry = new THREE.SphereGeometry(2, 32, 32);
+const material = new THREE.MeshStandardMaterial({ color: 0x3b82f6, wireframe: false });
+const planet = new THREE.Mesh(geometry, material);
+scene.add(planet);
+
+// Iluminação
+const pointLight = new THREE.PointLight(0xffffff, 1.5);
+pointLight.position.set(10, 10, 10);
+const ambientLight = new THREE.AmbientLight(0x333333);
+scene.add(pointLight, ambientLight);
+
+// Fundo de estrelas
+function addStar() {
+  const starGeo = new THREE.SphereGeometry(0.05, 24, 24);
+  const starMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+  const star = new THREE.Mesh(starGeo, starMat);
+
+  const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(100));
+  star.position.set(x, y, z);
+  scene.add(star);
 }
+Array(300).fill().forEach(addStar);
 
-// Resposta do Quiz
-function checkAnswer(answer) {
-  const resultEl = document.getElementById('quiz-result');
-  if (answer === 'Júpiter') {
-    resultEl.textContent = 'Correcto! Júpiter é o maior planeta do Sistema Solar.';
-    resultEl.style.color = '#4caf50';
-  } else {
-    resultEl.textContent = 'Incorreto. Tente novamente!';
-    resultEl.style.color = '#f44336';
-  }
+camera.position.z = 8;
+
+// Loop de Animação
+function animate() {
+  requestAnimationFrame(animate);
+  planet.rotation.y += 0.005;
+  renderer.render(scene, camera);
 }
+animate();
 
-// Inicialização do Planeta 3D com Three.js
-function init3DScene() {
-  const container = document.getElementById('canvas-container');
-  const scene = new THREE.Scene();
-  
-  const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-  camera.position.z = 3;
-
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setSize(container.clientWidth, container.clientHeight);
-  container.appendChild(renderer.domElement);
-
-  // Esfera (Planeta)
-  const geometry = new THREE.SphereGeometry(1, 32, 32);
-  const material = new THREE.MeshPhongMaterial({
-    color: 0x00d2ff,
-    wireframe: true
-  });
-  const planet = new THREE.Mesh(geometry, material);
-  scene.add(planet);
-
-  // Luz
-  const light = new THREE.DirectionalLight(0xffffff, 1);
-  light.position.set(5, 5, 5).normalize();
-  scene.add(light);
-
-  // Animação de Rotação
-  function animate() {
-    requestAnimationFrame(animate);
-    planet.rotation.y += 0.005;
-    planet.rotation.x += 0.002;
-    renderer.render(scene, camera);
-  }
-
-  animate();
-}
+// Ajuste automático de tela
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
