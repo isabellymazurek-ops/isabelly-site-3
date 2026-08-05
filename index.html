@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exploração Espacial Interativa</title>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Three.js para renderização 3D -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body class="dark-mode">
+
+  <!-- Navegação -->
+  <header>
+    <div class="logo">🚀 AstroExplorer</div>
+    <nav>
+      <button class="nav-btn active" onclick="switchTab('home')">Início</button>
+      <button class="nav-btn" onclick="switchTab('system')">Sistema 3D</button>
+      <button class="nav-btn" onclick="switchTab('missions')">Missões</button>
+      <button class="nav-btn" onclick="switchTab('quiz')">Quiz</button>
+      <button class="nav-btn" onclick="switchTab('gallery')">Galeria</button>
+    </nav>
+  </header>
+
+  <!-- Conteúdo das Abas -->
+  <main>
+    <!-- Aba Início -->
+    <section id="home" class="tab-content active">
+      <div class="hero">
+        <h1>Explore o Universo Desconhecido</h1>
+        <p>Acompanhe missões históricas, notícias do cosmos e simulações interativas.</p>
+      </div>
+
+      <div class="news-grid">
+        <article class="card">
+          <h3>Artemis Program</h3>
+          <p>O retorno do ser humano à Lua e os novos passos para a colonização de Marte.</p>
+        </article>
+        <article class="card">
+          <h3>Telescópio James Webb</h3>
+          <p>Descobertas recentes de galáxias nos primórdios do Universo visível.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Aba Sistema Solar 3D -->
+    <section id="system" class="tab-content">
+      <h2>Visualizador Planetário 3D</h2>
+      <p>Arraste para girar a órbita e explore os corpos celestes.</p>
+      <div id="canvas-container"></div>
+    </section>
+
+    <!-- Aba Missões Históricas -->
+    <section id="missions" class="tab-content">
+      <h2>Marcos da Exploração Espacial</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <strong>1957 — Sputnik 1:</strong> Primeiro satélite artificial em órbita terrestre.
+        </div>
+        <div class="timeline-item">
+          <strong>1969 — Apollo 11:</strong> Primeira alunissagem humana na história.
+        </div>
+        <div class="timeline-item">
+          <strong>2020 — Perseverance:</strong> Robô pousa em Marte buscando sinais de vida antiga.
+        </div>
+      </div>
+    </section>
+
+    <!-- Aba Quiz Interativo -->
+    <section id="quiz" class="tab-content">
+      <h2>Desafio Cósmico</h2>
+      <div id="quiz-container">
+        <p id="quiz-question">Qual é o maior planeta do Sistema Solar?</p>
+        <div class="quiz-options">
+          <button onclick="checkAnswer('Marte')">Marte</button>
+          <button onclick="checkAnswer('Júpiter')">Júpiter</button>
+          <button onclick="checkAnswer('Saturno')">Saturno</button>
+        </div>
+        <p id="quiz-result"></p>
+      </div>
+    </section>
+
+    <!-- Aba Galeria -->
+    <section id="gallery" class="tab-content">
+      <h2>Galeria de Imagens</h2>
+      <div class="gallery-grid">
+        <div class="gallery-card">🌌 Nebulosas Profundas</div>
+        <div class="gallery-card">🪐 Anéis de Saturno</div>
+        <div class="gallery-card">👨‍🚀 Caminhada Espacial</div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
