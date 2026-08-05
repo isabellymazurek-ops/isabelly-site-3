@@ -1,96 +1,53 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Exploração Espacial Interativa</title>
-  <link rel="stylesheet" href="styles.css" />
-  <!-- Three.js para renderização 3D -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exploração Espacial 3D</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- CDN do Three.js para o 3D -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- OrbitControls para movimentação do mouse no 3D -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </head>
-<body class="dark-mode">
+<body class="dark-theme">
 
-  <!-- Navegação -->
+  <!-- Canvas onde o Universo 3D é renderizado -->
+  <canvas id="space-canvas"></canvas>
+
   <header>
-    <div class="logo">🚀 AstroExplorer</div>
+    <h1>CosmoExplorer</h1>
     <nav>
-      <button class="nav-btn active" onclick="switchTab('home')">Início</button>
-      <button class="nav-btn" onclick="switchTab('system')">Sistema 3D</button>
-      <button class="nav-btn" onclick="switchTab('missions')">Missões</button>
-      <button class="nav-btn" onclick="switchTab('quiz')">Quiz</button>
-      <button class="nav-btn" onclick="switchTab('gallery')">Galeria</button>
+      <a href="#solar-system">Sistema Solar</a>
+      <a href="#missions">Missões</a>
+      <a href="#rocket-sim">Simulador</a>
+      <a href="#quiz">Quiz</a>
+      <button id="theme-toggle">☀️ / 🌙</button>
     </nav>
   </header>
 
-  <!-- Conteúdo das Abas -->
   <main>
-    <!-- Aba Início -->
-    <section id="home" class="tab-content active">
-      <div class="hero">
-        <h1>Explore o Universo Desconhecido</h1>
-        <p>Acompanhe missões históricas, notícias do cosmos e simulações interativas.</p>
-      </div>
-
-      <div class="news-grid">
-        <article class="card">
-          <h3>Artemis Program</h3>
-          <p>O retorno do ser humano à Lua e os novos passos para a colonização de Marte.</p>
-        </article>
-        <article class="card">
-          <h3>Telescópio James Webb</h3>
-          <p>Descobertas recentes de galáxias nos primórdios do Universo visível.</p>
-        </article>
-      </div>
+    <section id="hero">
+      <h2>Sinta a imersão do espaço sideral</h2>
+      <p>Explore planetas, mije em direção às estrelas e descubra o universo.</p>
     </section>
 
-    <!-- Aba Sistema Solar 3D -->
-    <section id="system" class="tab-content">
-      <h2>Visualizador Planetário 3D</h2>
-      <p>Arraste para girar a órbita e explore os corpos celestes.</p>
-      <div id="canvas-container"></div>
+    <section id="solar-system" class="card">
+      <h2>Sistema Solar Interativo</h2>
+      <p>Arraste o mouse para girar a câmera e use o scroll para aproximar.</p>
     </section>
 
-    <!-- Aba Missões Históricas -->
-    <section id="missions" class="tab-content">
-      <h2>Marcos da Exploração Espacial</h2>
-      <div class="timeline">
-        <div class="timeline-item">
-          <strong>1957 — Sputnik 1:</strong> Primeiro satélite artificial em órbita terrestre.
-        </div>
-        <div class="timeline-item">
-          <strong>1969 — Apollo 11:</strong> Primeira alunissagem humana na história.
-        </div>
-        <div class="timeline-item">
-          <strong>2020 — Perseverance:</strong> Robô pousa em Marte buscando sinais de vida antiga.
-        </div>
-      </div>
-    </section>
-
-    <!-- Aba Quiz Interativo -->
-    <section id="quiz" class="tab-content">
-      <h2>Desafio Cósmico</h2>
+    <section id="quiz" class="card">
+      <h2>Quiz de Conhecimento Espacial</h2>
       <div id="quiz-container">
-        <p id="quiz-question">Qual é o maior planeta do Sistema Solar?</p>
-        <div class="quiz-options">
-          <button onclick="checkAnswer('Marte')">Marte</button>
-          <button onclick="checkAnswer('Júpiter')">Júpiter</button>
-          <button onclick="checkAnswer('Saturno')">Saturno</button>
-        </div>
-        <p id="quiz-result"></p>
-      </div>
-    </section>
-
-    <!-- Aba Galeria -->
-    <section id="gallery" class="tab-content">
-      <h2>Galeria de Imagens</h2>
-      <div class="gallery-grid">
-        <div class="gallery-card">🌌 Nebulosas Profundas</div>
-        <div class="gallery-card">🪐 Anéis de Saturno</div>
-        <div class="gallery-card">👨‍🚀 Caminhada Espacial</div>
+        <p id="question">Qual é o maior planeta do Sistema Solar?</p>
+        <button onclick="checkAnswer(true)">Júpiter</button>
+        <button onclick="checkAnswer(false)">Marte</button>
+        <p id="result"></p>
       </div>
     </section>
   </main>
 
-  <script src="script.js"></script>
+  <script src="space.js"></script>
 </body>
 </html>
