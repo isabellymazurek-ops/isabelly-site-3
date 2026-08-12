@@ -1817,3 +1817,70 @@ console.log(
 console.log(
     "Sistema carregado com sucesso."
 );
+/* =========================================
+   SISTEMA DE AVALIAÇÃO COM CORAÇÕES
+   ========================================= */
+
+const coracoes = document.querySelectorAll(".coracao");
+const mensagem = document.getElementById("mensagem-avaliacao");
+const contador = document.getElementById("contador-avaliacoes");
+
+let avaliacaoSelecionada = 0;
+
+// Mensagens de acordo com a avaliação
+const mensagens = {
+    1: "😢 Vamos melhorar! Obrigada pela avaliação.",
+    2: "💗 Obrigada! Sua opinião ajuda muito.",
+    3: "💖 Obrigada! Que bom que gostou.",
+    4: "💕 Fico feliz que você tenha gostado!",
+    5: "🚀❤️ UAU! Obrigada pelas 5 estrelas!"
+};
+
+// Atualiza os corações
+function atualizarCoracoes(valor) {
+
+    coracoes.forEach((coracao) => {
+
+        const numero = Number(coracao.dataset.valor);
+
+        if (numero <= valor) {
+            coracao.textContent = "♥";
+            coracao.classList.add("selecionado");
+        } else {
+            coracao.textContent = "♡";
+            coracao.classList.remove("selecionado");
+        }
+
+    });
+}
+
+// Quando clicar em um coração
+coracoes.forEach((coracao) => {
+
+    coracao.addEventListener("click", () => {
+
+        avaliacaoSelecionada = Number(coracao.dataset.valor);
+
+        atualizarCoracoes(avaliacaoSelecionada);
+
+        mensagem.textContent = mensagens[avaliacaoSelecionada];
+
+        // Salva a avaliação no navegador
+        localStorage.setItem(
+            "avaliacaoExploracaoEspacial",
+            avaliacaoSelecionada
+        );
+
+        // Atualiza contador local
+        let total = Number(
+            localStorage.getItem("totalAvaliacoes") || 0
+        );
+
+        total++;
+
+        localStorage.setItem("totalAvaliacoes", total);
+
+        contador.textContent = total;
+    });
+
+});
