@@ -2537,3 +2537,106 @@ footer p {
     }
 
 }
+/* =========================================
+   AVALIAÇÃO DO SITE
+   ========================================= */
+
+.avaliacao-site {
+    padding: 90px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.avaliacao-container {
+    max-width: 700px;
+    margin: auto;
+    padding: 45px 30px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 40px rgba(255, 60, 120, 0.08);
+}
+
+.avaliacao-emoji {
+    font-size: 45px;
+    display: block;
+    margin-bottom: 15px;
+    animation: coracaoPulando 1.5s infinite;
+}
+
+.avaliacao-container h2 {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.avaliacao-container p {
+    opacity: 0.75;
+}
+
+.coracoes {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 25px 0;
+}
+
+.coracao {
+    background: transparent;
+    border: none;
+    color: #ff4d8d;
+    font-size: 48px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    padding: 5px;
+}
+
+.coracao:hover {
+    transform: scale(1.25);
+    color: #ff176b;
+}
+
+.coracao.selecionado {
+    color: #ff176b;
+    text-shadow: 0 0 15px rgba(255, 23, 107, 0.7);
+    transform: scale(1.1);
+}
+
+.mensagem-avaliacao {
+    min-height: 25px;
+    color: #ff70a5;
+    font-weight: 600;
+}
+
+.resultado-avaliacao {
+    margin-top: 20px;
+    font-size: 14px;
+    opacity: 0.7;
+}
+
+@keyframes coracaoPulando {
+    0%, 100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+/* Celular */
+@media (max-width: 600px) {
+
+    .avaliacao-container {
+        padding: 35px 15px;
+    }
+
+    .avaliacao-container h2 {
+        font-size: 25px;
+    }
+
+    .coracao {
+        font-size: 38px;
+    }
+}
