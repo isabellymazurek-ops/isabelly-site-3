@@ -1,49 +1,245 @@
+/* ==========================================================================
+   COSMOEXPLORER - Estilos CSS Profissionais & Design Espacial Imersivo
+   ========================================================================== */
+
+:root {
+  --bg-color: #030408;
+  --bg-card: rgba(12, 17, 32, 0.75);
+  --bg-card-border: rgba(0, 210, 255, 0.2);
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --accent-cyan: #00d2ff;
+  --accent-purple: #7928ca;
+  --accent-gold: #ffb703;
+  --accent-green: #10b981;
+  --accent-red: #ef4444;
+  --header-bg: rgba(6, 9, 20, 0.85);
+  --shadow-glow: 0 8px 32px 0 rgba(0, 210, 255, 0.15);
+  --font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --transition-speed: 0.3s;
+}
+
+body.light-mode {
+  --bg-color: #f0f4f8;
+  --bg-card: rgba(255, 255, 255, 0.88);
+  --bg-card-border: rgba(0, 119, 182, 0.25);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --accent-cyan: #0284c7;
+  --header-bg: rgba(255, 255, 255, 0.9);
+  --shadow-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  scroll-behavior: smooth;
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #ffffff;
-  background-color: #05050a;
+  font-family: var(--font-family);
+  background-color: var(--bg-color);
+  color: var(--text-primary);
   overflow-x: hidden;
+  transition: background-color var(--transition-speed), color var(--transition-speed);
 }
 
-/* O canvas 3D fica fixo no fundo */
 #space-canvas {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: -1;
+  z-index: 0;
+  pointer-events: auto;
 }
 
 header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem 3rem;
-  background: rgba(10, 10, 20, 0.8);
-  backdrop-filter: blur(10px);
-  position: sticky;
-  top: 0;
+  padding: 1rem 2rem;
+  background: var(--header-bg);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--bg-card-border);
 }
 
-header nav a {
-  color: #fff;
-  margin: 0 15px;
+header .logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--accent-cyan);
+}
+
+nav {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+nav a {
+  color: var(--text-primary);
   text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color var(--transition-speed);
 }
 
-.card {
-  max-width: 800px;
-  margin: 100px auto;
-  padding: 2rem;
+nav a:hover {
+  color: var(--accent-cyan);
+}
+
+.theme-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--bg-card-border);
+  color: var(--text-primary);
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+main {
+  position: relative;
+  z-index: 1;
+  padding-top: 90px;
+  padding-bottom: 50px;
+  pointer-events: none;
+}
+
+.card-section, .hero-section {
+  pointer-events: auto;
+  max-width: 1000px;
+  margin: 70px auto;
+  padding: 2.5rem;
+  background: var(--bg-card);
+  backdrop-filter: blur(14px);
+  border-radius: 20px;
+  border: 1px solid var(--bg-card-border);
+  box-shadow: var(--shadow-glow);
+  transition: transform 0.8s ease-out, opacity 0.8s ease-out;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section-header {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--bg-card-border);
+  padding-bottom: 1rem;
+}
+
+.section-header h2 {
+  font-size: 1.8rem;
+  color: var(--accent-cyan);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hero-section {
+  text-align: center;
+}
+
+.hero-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #ffffff 0%, var(--accent-cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--accent-cyan);
+  color: #030408;
+}
+
+.planet-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.planet-btn {
   background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--bg-card-border);
+  color: var(--text-primary);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.planet-btn.active {
+  background: var(--accent-cyan);
+  color: #000;
+}
+
+.sim-stage {
+  height: 250px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px dashed var(--bg-card-border);
   border-radius: 12px;
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+}
+
+.rocket {
+  font-size: 2.5rem;
+  position: absolute;
+  bottom: 12px;
+  transition: transform 1.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.quiz-opt-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--bg-card-border);
+  color: var(--text-primary);
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.quiz-opt-btn.correct { background: rgba(16, 185, 129, 0.2); border-color: var(--accent-green); color: var(--accent-green); }
+.quiz-opt-btn.wrong { background: rgba(239, 68, 68, 0.2); border-color: var(--accent-red); color: var(--accent-red); }
+
+footer {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+  border-top: 1px solid var(--bg-card-border);
+  background: var(--header-bg);
 }
