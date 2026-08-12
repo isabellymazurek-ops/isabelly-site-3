@@ -3,51 +3,430 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Exploração Espacial 3D</title>
-  <link rel="stylesheet" href="style.css">
-  <!-- CDN do Three.js para o 3D -->
+  <title>CosmoExplorer - Imersão Espacial 3D</title>
+  
+  <!-- Three.js e OrbitControls para o Universo 3D -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <!-- OrbitControls para movimentação do mouse no 3D -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-</head>
-<body class="dark-theme">
 
-  <!-- Canvas onde o Universo 3D é renderizado -->
-  <canvas id="space-canvas"></canvas>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #e0e6ed;
+      background-color: #030308;
+      overflow-x: hidden;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* Canvas 3D fixo no fundo de toda a página */
+    #bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: auto;
+    }
+
+    /* Interface translúcida para ver o espaço 3D */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: rgba(5, 7, 15, 0.65);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      color: #00d2ff;
+      letter-spacing: 2px;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 10px;
+      font-size: 0.95rem;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: #00d2ff;
+    }
+
+    .btn-toggle {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      padding-top: 80px;
+      pointer-events: none; /* Permite interagir com o 3D nos espaços vazios */
+    }
+
+    section {
+      pointer-events: auto;
+      max-width: 900px;
+      margin: 80px auto;
+      padding: 2.5rem;
+      background: rgba(10, 15, 30, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      border: 1px solid rgba(0, 210, 255, 0.2);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+      transform: translateY(30px);
+      opacity: 0;
+      transition: all 0.8s ease-out;
+    }
+
+    section.visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    h2 {
+      color: #00d2ff;
+      margin-bottom: 1rem;
+    }
+
+    p, li {
+      line-height: 1.6;
+      color: #cbd5e1;
+    }
+
+    /* Grid para notícias e galeria */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .grid-card {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Simulador de Foguete */
+    .sim-container {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    #rocket {
+      font-size: 3rem;
+      display: inline-block;
+      transition: transform 2s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .btn-action {
+      margin-top: 1rem;
+      padding: 10px 20px;
+      background: #00d2ff;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* Quiz */
+    .quiz-option {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .quiz-option:hover {
+      background: rgba(0, 210, 255, 0.3);
+    }
+
+    /* Comentários */
+    .comment-box input, .comment-box textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      border-radius: 6px;
+    }
+
+    /* Modo Claro (Sobreposição leve sem cobrir o 3D) */
+    body.light-theme {
+      color: #1e293b;
+    }
+    body.light-theme section {
+      background: rgba(255, 255, 255, 0.85);
+      border-color: rgba(0, 100, 200, 0.2);
+      color: #0f172a;
+    }
+    body.light-theme p, body.light-theme li {
+      color: #334155;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Canvas do Universo 3D -->
+  <canvas id="bg-canvas"></canvas>
 
   <header>
-    <h1>CosmoExplorer</h1>
+    <h1>COSMOEXPLORER</h1>
     <nav>
-      <a href="#solar-system">Sistema Solar</a>
+      <a href="#solar-system">3D Espaço</a>
+      <a href="#news">Notícias</a>
       <a href="#missions">Missões</a>
-      <a href="#rocket-sim">Simulador</a>
+      <a href="#simulator">Simulador</a>
       <a href="#quiz">Quiz</a>
-      <button id="theme-toggle">☀️ / 🌙</button>
+      <a href="#comments">Comentários</a>
     </nav>
+    <button class="btn-toggle" onclick="toggleTheme()">Modo Claro/Escuro</button>
   </header>
 
   <main>
-    <section id="hero">
-      <h2>Sinta a imersão do espaço sideral</h2>
-      <p>Explore planetas, mije em direção às estrelas e descubra o universo.</p>
+    <section id="hero" class="visible">
+      <h2>Explore o Universo em 3D</h2>
+      <p>Arraste o mouse na tela para orbitar pelo espaço. Use a roda do mouse para aproximar ou afastar dos planetas em 3D ao fundo.</p>
     </section>
 
-    <section id="solar-system" class="card">
-      <h2>Sistema Solar Interativo</h2>
-      <p>Arraste o mouse para girar a câmera e use o scroll para aproximar.</p>
+    <section id="solar-system">
+      <h2>Sistema Solar & Planetas Interativos</h2>
+      <p>Ao fundo da tela, você está observando um modelo 3D dinâmico com iluminação solar real, rotação e um campo com centenas de estrelas.</p>
     </section>
 
-    <section id="quiz" class="card">
-      <h2>Quiz de Conhecimento Espacial</h2>
-      <div id="quiz-container">
-        <p id="question">Qual é o maior planeta do Sistema Solar?</p>
-        <button onclick="checkAnswer(true)">Júpiter</button>
-        <button onclick="checkAnswer(false)">Marte</button>
-        <p id="result"></p>
+    <section id="news">
+      <h2>Últimas Notícias da Exploração Espacial</h2>
+      <div class="grid">
+        <div class="grid-card">
+          <h3>Telescópio James Webb</h3>
+          <p>Novas imagens revelam detalhes inéditos da atmosfera de exoplanetas distantes.</p>
+        </div>
+        <div class="grid-card">
+          <h3>Programa Artemis</h3>
+          <p>A preparação para o retorno do ser humano à superfície da Lua avança para a próxima fase.</p>
+        </div>
       </div>
+    </section>
+
+    <section id="missions">
+      <h2>Missões Históricas</h2>
+      <ul>
+        <li><strong>Apollo 11 (1969):</strong> Primeiro Pouso Humano na Lua.</li>
+        <li><strong>Voyager 1 (1977):</strong> O objeto humano mais distante da Terra, explorando o espaço interestelar.</li>
+        <li><strong>Curiosity & Perseverance:</strong> Exploradores robóticos buscando sinais de vida passada em Marte.</li>
+      </ul>
+    </section>
+
+    <section id="simulator">
+      <h2>Simulador de Lançamento de Foguete</h2>
+      <div class="sim-container">
+        <div id="rocket">🚀</div>
+        <br>
+        <button class="btn-action" onclick="launchRocket()">Lançar Foguete!</button>
+        <p id="sim-status" style="margin-top: 10px;"></p>
+      </div>
+    </section>
+
+    <section id="quiz">
+      <h2>Quiz Espacial</h2>
+      <p id="quiz-question">Qual é o maior planeta do Sistema Solar?</p>
+      <button class="quiz-option" onclick="answerQuiz(false)">Saturno</button>
+      <button class="quiz-option" onclick="answerQuiz(true)">Júpiter</button>
+      <button class="quiz-option" onclick="answerQuiz(false)">Marte</button>
+      <p id="quiz-result" style="margin-top: 10px; font-weight: bold;"></p>
+    </section>
+
+    <section id="comments">
+      <h2>Mural de Comentários</h2>
+      <div class="comment-box">
+        <input type="text" id="author" placeholder="Seu nome">
+        <textarea id="comment-text" rows="3" placeholder="Deixe sua mensagem sobre o espaço..."></textarea>
+        <button class="btn-action" onclick="addComment()">Enviar Comentário</button>
+      </div>
+      <div id="comments-list" style="margin-top: 20px;"></div>
     </section>
   </main>
 
-  <script src="space.js"></script>
+  <script>
+    /* --- CONFIGURAÇÃO DO UNIVERSO 3D (THREE.JS) --- */
+    const canvas = document.getElementById('bg-canvas');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+
+    // Controles de Órbita (Mouse)
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 0.5;
+
+    // Sol (Luz e Esfera Central)
+    const sunGeo = new THREE.SphereGeometry(2, 32, 32);
+    const sunMat = new THREE.MeshBasicMaterial({ color: 0xffaa00 });
+    const sun = new THREE.Mesh(sunGeo, sunMat);
+    scene.add(sun);
+
+    const sunLight = new THREE.PointLight(0xffffff, 2, 300);
+    scene.add(sunLight);
+
+    const ambientLight = new THREE.AmbientLight(0x333333);
+    scene.add(ambientLight);
+
+    // Criar Planeta Terra (Azul)
+    const earthGeo = new THREE.SphereGeometry(1, 32, 32);
+    const earthMat = new THREE.MeshStandardMaterial({ color: 0x2b65ec, roughness: 0.6 });
+    const earth = new THREE.Mesh(earthGeo, earthMat);
+    earth.position.set(6, 0, 0);
+    scene.add(earth);
+
+    // Criar Marte (Vermelho)
+    const marsGeo = new THREE.SphereGeometry(0.7, 32, 32);
+    const marsMat = new THREE.MeshStandardMaterial({ color: 0xc1440e, roughness: 0.7 });
+    const mars = new THREE.Mesh(marsGeo, marsMat);
+    mars.position.set(10, 0, 0);
+    scene.add(mars);
+
+    // Campo de Estrelas
+    const starsGeo = new THREE.BufferGeometry();
+    const count = 1500;
+    const positions = new Float32Array(count * 3);
+
+    for(let i = 0; i < count * 3; i++) {
+      positions[i] = (Math.random() - 0.5) * 200;
+    }
+    starsGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const starsMat = new THREE.PointsMaterial({ size: 0.2, color: 0xffffff });
+    const starField = new THREE.Points(starsGeo, starsMat);
+    scene.add(starField);
+
+    camera.position.set(0, 5, 15);
+
+    // Rotação contínua dos planetas
+    let angleEarth = 0;
+    let angleMars = 0;
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      // Órbita da Terra
+      angleEarth += 0.01;
+      earth.position.x = Math.cos(angleEarth) * 7;
+      earth.position.z = Math.sin(angleEarth) * 7;
+      earth.rotation.y += 0.02;
+
+      // Órbita de Marte
+      angleMars += 0.007;
+      mars.position.x = Math.cos(angleMars) * 11;
+      mars.position.z = Math.sin(angleMars) * 11;
+      mars.rotation.y += 0.015;
+
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Responsividade da tela
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    /* --- INTERATIVIDADE E ANIMAÇÕES DO SITE --- */
+
+    // Animação ao Rolar a Página (Scroll Reveal)
+    const sections = document.querySelectorAll('section');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.2 });
+
+    sections.forEach(sec => observer.observe(sec));
+
+    // Modo Claro / Escuro
+    function toggleTheme() {
+      document.body.classList.toggle('light-theme');
+    }
+
+    // Simulador de Foguete
+    function launchRocket() {
+      const rocket = document.getElementById('rocket');
+      const status = document.getElementById('sim-status');
+      status.innerText = "Contagem regressiva... Lançar!";
+      rocket.style.transform = "translateY(-400px) scale(1.5)";
+      setTimeout(() => {
+        status.innerText = "Foguete em órbita com sucesso!";
+      }, 2000);
+    }
+
+    // Quiz
+    function answerQuiz(isCorrect) {
+      const result = document.getElementById('quiz-result');
+      if(isCorrect) {
+        result.innerText = "Correto! Júpiter é o maior planeta do Sistema Solar.";
+        result.style.color = "#4ade80";
+      } else {
+        result.innerText = "Incorreto. Tente novamente!";
+        result.style.color = "#f87171";
+      }
+    }
+
+    // Comentários
+    function addComment() {
+      const author = document.getElementById('author').value;
+      const text = document.getElementById('comment-text').value;
+      const list = document.getElementById('comments-list');
+
+      if(author && text) {
+        const comment = document.createElement('div');
+        comment.style.background = "rgba(255,255,255,0.05)";
+        comment.style.padding = "10px";
+        comment.style.marginBottom = "8px";
+        comment.style.borderRadius = "6px";
+        comment.innerHTML = `<strong>${author}:</strong> <p>${text}</p>`;
+        list.appendChild(comment);
+
+        document.getElementById('author').value = '';
+        document.getElementById('comment-text').value = '';
+      }
+    }
+  </script>
 </body>
 </html>
